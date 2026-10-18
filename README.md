@@ -1,5 +1,3 @@
-<img src="assets/icon/icon-1024.png" width="128" alt="wallpascii icon">
-
 # wallpascii
 A ASCII-wallpaper generator from photos/text
 
