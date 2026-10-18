@@ -1,9 +1,9 @@
 # wallpascii
 A ASCII-wallpaper generator from photos/text
 
-![wallpascii main window mockup](docs/mockup.png)
+![wallpascii main window](docs/screenshot.png)
 
-*UI mockup (macOS). Native apps for macOS (Apple Silicon) in `macos/` and Windows 10/11 in `windows/`.*
+*macOS app. Native apps for macOS (Apple Silicon) in `macos/` and Windows 10/11 in `windows/`.*
 
 ## По-русски
 
