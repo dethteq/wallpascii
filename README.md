@@ -27,7 +27,7 @@ A ASCII-wallpaper generator from photos/text
 
 ### Процесс создания
 
-<img src="docs/process.png" width="472" alt="процесс создания">
+<img src="docs/making-of.png" width="472" alt="процесс создания">
 
 *процесс создания*
 
