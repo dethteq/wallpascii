@@ -1,0 +1,41 @@
+name: Release
+
+# Push a tag like v0.1.0 and the built apps land on the Releases page.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            asset: wallpascii-windows-x64.zip
+          - os: macos-14
+            asset: wallpascii-macos-arm64.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DWALLPASCII_BUILD_TESTS=OFF
+          cmake --build build --config Release --parallel
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path build/windows/Release/wallpascii.exe, build/cli/Release/wallpascii-cli.exe -DestinationPath ${{ matrix.asset }}
+
+      - name: Package (macOS)
+        if: runner.os == 'macOS'
+        run: ditto -c -k --keepParent build/macos/wallpascii.app ${{ matrix.asset }}
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.asset }}
+          generate_release_notes: true

@@ -1,0 +1,6 @@
+build/
+.DS_Store
+*.png
+!docs/*.png
+*.jpg
+!assets/icon/*.png

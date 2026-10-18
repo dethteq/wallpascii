@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS (Apple Silicon)
+            os: macos-14
+          - name: Windows (MSVC x64)
+            os: windows-latest
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Test
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: CLI smoke test
+        shell: bash
+        run: |
+          cli=build/cli/wallpascii-cli
+          [ -f build/cli/Release/wallpascii-cli.exe ] && cli=build/cli/Release/wallpascii-cli.exe
+          "$cli" -i docs/mockup.png -o smoke.png --size 1920x1080 --font-size 12
+          "$cli" -i docs/mockup.png -o smoke.jpg --size 1280x800 --charset blocks --fit fit
+          "$cli" -i docs/mockup.png -o smoke-text.png --size 1280x800 --mode text --text "wallpascii "
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: smoke-${{ matrix.os }}
+          path: smoke*
+
+      - name: Upload Windows app
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: wallpascii-windows-x64
+          path: build/windows/Release/wallpascii.exe
